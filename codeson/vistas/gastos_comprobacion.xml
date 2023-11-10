@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <data>
+
+     <record model="ir.ui.view" id="codeson.gasto_comprobar_tree">
+       <field name="name">Comprobación de gastos</field>
+       <field name="model">codeson.orden_pago</field>
+       <field name="arch" type="xml">
+       <tree>
+              <field name="name"/>
+              <field name="beneficiario"/>
+              <field name="fecha"/>
+              <field name="state" string="Estado"/>
+              <field name="state_gasto_comprobar" string="Comprobado"/>
+              <field name="pagos_count" string="Pagado"/>
+              <field name="amount_total"/>
+           </tree>
+         </field>
+       </record>
+
+     <record model="ir.actions.act_window" id="codeson.gasto_comprobar_w">
+         <field name="name">Gasto a comprobar</field>
+         <field name="res_model">codeson.orden_pago</field>
+         <field name="view_mode">tree,form</field>
+         <field name="view_id" ref="codeson.gasto_comprobar_tree" />
+         <field name="domain">[
+           ('tipo','=','gasto_comprobar')
+           ]
+         </field>
+         <field name="context">{
+           'default_tipo':'gasto_comprobar',
+           'default_state_gasto_comprobar':'sin_comprobar'
+           }
+
+         </field>
+      </record>
+
+     <record model="ir.actions.act_window" id="codeson.comprobar_gasto_w">
+         <field name="name">Comprobar gasto</field>
+         <field name="res_model">codeson.orden_pago</field>
+         <field name="view_mode">tree,form</field>
+         <field name="view_id" ref="codeson.gasto_comprobar_tree" />
+         <field name="domain">[
+           ('tipo','=','gasto_comprobar'),
+           ('beneficiario.user_id','=',uid)
+           ]
+         </field>
+      </record>
+
+      <menuitem name="Comprobar Gasto" id="codeson.comprobar_gasto_top" sequence="4" action='codeson.comprobar_gasto_w'/>
+
+  </data>
+</odoo>

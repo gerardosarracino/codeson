@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <data>
+
+     <record model="ir.ui.view" id="codeson.orden_pago_tree">
+       <field name="name">Orden de pago</field>
+       <field name="model">codeson.orden_pago</field>
+       <field name="arch" type="xml">
+       <tree create="false" edit="false">
+              <field name="name"/>
+              <field name="proveedor"/>
+              <field name="fecha"/>
+              <field name="state" string="Estado"/>
+              <field name="pagos_count" string="Pagado"/>
+              <field name="amount_total"/>
+           </tree>
+         </field>
+       </record>
+
+     <record model="ir.ui.view" id="codeson.orden_pago_form">
+         <field name="name">Orden de pago</field>
+         <field name="model">codeson.orden_pago</field>
+         <field name="arch" type="xml" >
+          <form>
+                 <header class="oe_view_only">
+                   <button name="cancelar" states="borrador,confirmado" edit="false" string="Cancelar" type="object" class="readonly"/>
+                   <button name="confirmar" states="borrador" edit="false" string="Confirmar" type="object" class="btn-primary readonly"/>
+                   <button name="validar" states="confirmado" edit="false" string="Validar" type="object" class="btn-primary readonly"/>
+                   <button name="552" states="validado" context="{'default_orden_pago_id':active_id,'default_payment_type':'outbound','default_state':'sent'}" type="action" string="Registrar Pago" class="oe_highlight"/>
+                   <field name="state" widget="statusbar" statusbar_visible="borrador,confirmado,validado,pagado" class="readonly"/>
+                 </header>
+                 <sheet>
+                   <div class="oe_button_box oe_read_only" name="button_box" attrs="{'invisible': [('state', '!=', 'validado')]}">
+
+
+                 <button class="oe_stat_button" type="action" name="553" context="{'search_default_orden_pago_id': active_id,'default_orden_pago_id': active_id}" icon="fa-money">
+                     <field string="Pagado" name="pagos_count" widget="statinfo"/>
+                   </button>
+                 </div>
+
+                   <div class="pull-left">
+                      <label for="name" class="oe_edit_only oe_inline"/>
+                      <h1>
+                         <field name="name" readonly="1"/>
+                      </h1>
+                   </div>
+                   <group>
+                     <group>
+
+                      <field name="solicita" required="1"/>
+                       <field name="beneficiario" attrs="{'required':[('tipo','=','gasto_comprobar')]}"/>
+                       <field name="descripcion"/>
+                       <field name="total_de_factura_esp" attrs="{'invisible':True}"/>
+                       <field name="unidad_administrativa"/>
+                       <field name="state_gasto_comprobar" invisible="1"/>
+
+                     </group>
+
+                     <group>
+                       <field name="fecha"/>
+                       <field name="fecha_programada"/>
+                       <field name="monto_comprobar" attrs="{                                 'invisible':[('tipo','!=','gasto_comprobar')],                                 'required':[('tipo','=','gasto_comprobar')]                           }"/>
+
+
+
+			<field name="cheque_nombre" attrs="{'invisible':[('tipo','=','gasto_comprobar')]}"/>
+
+                       <field name="facturado" attrs="{'invisible':[('tipo','=','gasto_comprobar')]}"/>
+
+                       <field name="referencia" invisible="1"/>
+                       <field name="tipo" invisible="1"/>
+                       <field name="viatico_id" readonly="1" attrs="{'invisible':[('tipo','!=','viatico')]}"/>
+                       <field name="apoyo_id" readonly="1" attrs="{'invisible':[('tipo','!=','apoyo')]}"/>
+                       <field name="compra_id" readonly="1" attrs="{'invisible':[('tipo','!=','compra')]}"/>
+                       <field name="total_de_factura_esp" invisible="1"/>
+
+
+                     </group>
+                   </group>
+                   <notebook attrs="{'invisible':[('tipo','=','gasto_comprobar')]}">
+                      <page string="Concepto">
+                         <field name="line_ids" context="{'default_unidad_administrativa':unidad_administrativa}" attrs="{'readonly': [('state', '!=', 'borrador')]}">
+                            <tree>
+                              <field name="unidad_administrativa" string="Dirección"/>
+                               <field name="obj_gasto" string="Partida"/>
+                               <field name="product_id" string="Concepto"/>
+                               <field name="detalles"/>
+                               <field name="cantidad"/>
+                               <field name="unidad_medida"/>
+                               <field name="impuesto" string="Impuestos" widget="many2many_tags" options="{'no_create': True}"/>
+                               <field name="precio_unitario"/>
+                            </tree>
+                            <form>
+                              <group>
+                                <group>
+                                  <field name="unidad_administrativa" string="Dirección"/>
+                                  <field name="product_id" string="Concepto"/>
+                                  <field name="obj_gasto" string="partida"/>
+                                  <field name="detalles"/>
+                                </group>
+                                <group>
+                                  <field name="unidad_medida"/>
+                                  <field name="cantidad"/>
+                                  <field name="precio_unitario"/>
+                                  <field name="impuesto" string="Impuestos" widget="many2many_tags" options="{'no_create': True}"/>
+                                </group>
+                              </group>
+                            </form>
+                         </field>
+                      </page>
+                    <page string="Información de Factura">
+                      <group>
+                        <group>
+                          <field name="proveedor" attrs="{'required':[('tipo','!=','gasto_comprobar'),('facturado','=',True)]}"/>
+                          <field name="referencia_proveedor" attrs="{'required':[('tipo','!=','gasto_comprobar'),('facturado','=',True)]}" string="Documento de origen"/>
+                          <!--button name="guardar_factura" edit="false" string="Guardar factura" type="object" class="btn-primary readonly"/-->
+                        </group>
+                        <group>
+                          <field name="fecha_factura" string="Fecha de factura" attrs="{'required':[('facturado','=',True)]}"/>
+                        </group>
+
+
+                      </group>
+                    </page>
+                   </notebook>
+
+                   <group attrs="{'invisible':[('tipo','=','gasto_comprobar')]}" class="oe_subtotal_footer oe_right oe_read_only">
+                                       <field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                       <field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                       <div class="oe_subtotal_footer_separator oe_inline">
+                                       <label for="amount_total"/>
+                                       </div>
+                                       <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                       </group>
+                 </sheet>
+
+               </form>
+             </field>
+           </record>
+
+           <record model="ir.actions.act_window" id="codeson.orden_pago_w">
+                    <field name="name">Ordenes de pago</field>
+                    <field name="res_model">codeson.orden_pago</field>
+                    <field name="view_mode">tree,form</field>
+                    <field name="view_id" ref="codeson.orden_pago_tree" />
+                 </record>
+
+           <record model="ir.actions.act_window" id="codeson.orden_pago_w_borrador">
+                          <field name="name">Ordenes de pago</field>
+                          <field name="res_model">codeson.orden_pago</field>
+                          <field name="view_mode">tree,form</field>
+                          <field name="domain">[('state','=','borrador')]</field>
+          </record>
+          <record model="ir.actions.act_window" id="codeson.orden_pago_w_confirmado">
+                         <field name="name">Ordenes de pago</field>
+                         <field name="res_model">codeson.orden_pago</field>
+                         <field name="view_mode">tree,form</field>
+                         <field name="domain">[('state','=','confirmado')]</field>
+         </record>
+         <record model="ir.actions.act_window" id="codeson.orden_pago_w_validado">
+                        <field name="name">Ordenes de pago</field>
+                        <field name="res_model">codeson.orden_pago</field>
+                        <field name="view_mode">tree,form</field>
+                        <field name="domain">[('state','=','validado')]</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="codeson.orden_pago_w_pagado">
+                       <field name="name">Ordenes de pago</field>
+                       <field name="res_model">codeson.orden_pago</field>
+                       <field name="view_mode">tree,form</field>
+                       <field name="domain">[('state','=','pagado')]</field>
+       </record>
+
+
+
+     <menuitem name="Ordenes de pago" id="codeson.ordenes_pago_root" sequence="4" />
+
+     <menuitem name="Control" parent="codeson.ordenes_pago_root" id="codeson.ordenes_pago_control" />
+     <menuitem name="Facturas de proveedor" action="codeson.factura_w" id="codeson.factura_menu" parent="codeson.ordenes_pago_control"/>
+
+     <!--menuitem name="Pagos" parent="codeson.gasto_directo_control" id="codeson.pagos_menu" action="codeson.pago_w" /-->
+
+          <menuitem name="Ordenes de pago" parent="codeson.ordenes_pago_root" id="codeson.orden_pago" />
+          <menuitem name="Todos"  parent="codeson.orden_pago" sequence="1" id="codeson.orden_pagos_todos" action="codeson.orden_pago_w" />
+          <menuitem name="borrador"  parent="codeson.orden_pago" sequence="1" id="codeson.orden_pagos_borrador" action="codeson.orden_pago_w_borrador" />
+          <menuitem name="Confirmadas"  parent="codeson.orden_pago" sequence="1" id="codeson.orden_pagos_confirmado" action="codeson.orden_pago_w_confirmado" />
+          <menuitem name="Validadas"  parent="codeson.orden_pago" sequence="1" id="codeson.orden_pagos_validado" action="codeson.orden_pago_w_validado" />
+          <menuitem name="Pagadas"  parent="codeson.orden_pago" sequence="1" id="codeson.orden_pagos_pagado" action="codeson.orden_pago_w_pagado" />
+
+
+
+</data>
+</odoo>

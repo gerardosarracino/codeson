@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <data>
+     <record model="ir.actions.act_window" id="codeson.documento_apoyo_action">
+       <field name="name">Documentos de evidencia de apoyo</field>
+       <field name="res_model">codeson.documento_apoyo</field>
+       <field name="view_mode">tree,form</field>
+     </record>
+
+     <record model="ir.ui.view" id="codeson_documento_apoyo_search">
+                 <field name="name">apoyo.search</field>
+                 <field name="model">codeson.documento_apoyo</field>
+                 <field name="arch" type="xml">
+                         <search>
+                               <field name="apoyo_id"/>
+                         </search>
+                 </field>
+         </record>
+
+
+     <record model="ir.ui.view" id="codeson_documento_apoyo_form">
+        <field name="name">Documento evidencia de apoyo</field>
+        <field name="model">codeson.documento_apoyo</field>
+        <field name="arch" type="xml">
+          <form>
+            <sheet>
+              <h1>
+                <label for="name" class="oe_edit_only" string="Nombre del documento"></label>
+              <field name="name" string="Nombre del documento"></field>
+              </h1>
+
+              <group>
+                <field name="file_name" invisible="1"/>
+                <field widget="binary" string="Archivo" height="64" name="file" filename="file_name" />
+                <field name="apoyo_id" invisible="1"></field>
+              </group>
+            </sheet>
+          </form>
+        </field>
+      </record>
+
+      <record model="ir.actions.act_window" id="codeson.evidencia_apoyo_action">
+        <field name="name">Evidencias de Apoyo</field>
+        <field name="res_model">codeson.evidencia_apoyo</field>
+        <field name="view_mode">tree,form</field>
+      </record>
+
+      <record model="ir.ui.view" id="codeson_evidencia_apoyo_form">
+         <field name="name">Evidencia de apoyo</field>
+         <field name="model">codeson.evidencia_apoyo</field>
+         <field name="arch" type="xml">
+           <form>
+             <header>
+               <field name="estado_evidencia" widget="statusbar" statusbar_visible="no_iniciado,completado" class="readonly" />
+             </header>
+             <sheet>
+               <div class="oe_button_box oe_read_only" name="button_box" >
+               <button class="oe_stat_button" type="action" name="%(codeson.documento_apoyo_action)d"
+                 context="{
+                        'search_default_apoyo_id': apoyo,
+                        'default_apoyo_id': apoyo
+                        }"
+                   icon="fa-sticky-note">
+                   <field string="Documentación" name="documentacion_count" widget="statinfo" />
+               </button>
+             </div>
+
+               <h1>
+               <field name="folio" string="Folio" readonly="1" ></field>
+               </h1>
+
+               <group>
+                 <group>
+                   <field name="apoyo" readonly="1"/>
+                   <field name="fecha_apoyo" ></field>
+                 </group>
+                 <group>
+                   <field name="fecha_vencimiento" />
+                   <field name="monto"/>
+
+                 </group>
+               </group>
+             </sheet>
+           </form>
+         </field>
+       </record>
+
+       <record model="ir.ui.view" id="codeson.evidencia_apoyo_tree">
+          <field name="name">Evidencias de apoyo</field>
+          <field name="model">codeson.evidencia_apoyo</field>
+          <field name="arch" type="xml">
+             <tree>
+                <field name="folio" />
+                <field name="apoyo" />
+                <field name="fecha_apoyo" readonly="1" />
+                <field name="fecha_vencimiento"/>
+                <field name="estado_evidencia" />
+             </tree>
+          </field>
+       </record>
+
+   </data>
+</odoo>

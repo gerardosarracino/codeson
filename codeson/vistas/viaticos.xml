@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <data>
+     <record model="ir.actions.act_window" id="codeson.documento_viatico_action">
+       <field name="name">Documentos de evidencia de viatico</field>
+       <field name="res_model">codeson.documento_viatico</field>
+       <field name="view_mode">tree,form</field>
+     </record>
+
+     <record model="ir.actions.act_window" id="codeson.viatico_w">
+        <field name="name">Viaticos</field>
+        <field name="res_model">codeson.viatico</field>
+        <field name="view_mode">tree,form</field>
+     </record>
+
+     <record model="ir.ui.view" id="codeson.viatico_borrador_tree">
+        <field name="name">Borradores de viaticos</field>
+        <field name="model">codeson.viatico</field>
+        <field name="arch" type="xml">
+           <tree>
+              <field name="folio" />
+             <field name="empleado" string="Comisionado"/>
+             <field name="unidad_administrativa" string="Dirección"/>
+              <field name="fecha" />
+             <field name="transporte"/>
+              <field name="amount_total" string="Total"/>
+
+           </tree>
+        </field>
+     </record>
+
+     <record model="ir.actions.act_window" id="codeson.viatico_borradores_w">
+        <field name="name">Borradores de viaticos</field>
+        <field name="res_model">codeson.viatico</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state','=','borrador')]</field>
+        <field name="view_id" ref="codeson.viatico_borrador_tree" />
+     </record>
+     <record model="ir.actions.act_window" id="codeson.viatico_confirmados_w">
+        <field name="name">Viaticos confirmdos</field>
+        <field name="res_model">codeson.viatico</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state','=','confirmado')]</field>
+        <field name="view_id" ref="codeson.viatico_borrador_tree" />
+     </record>
+     <record model="ir.actions.act_window" id="codeson.viatico_validados_w">
+        <field name="name">Viaticos validados</field>
+        <field name="res_model">codeson.viatico</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state','=','validado')]</field>
+        <field name="view_id" ref="codeson.viatico_borrador_tree" />
+     </record>
+
+
+     <record model="ir.ui.view" id="codeson.viatico_tree">
+        <field name="name">Viatico</field>
+        <field name="model">codeson.viatico</field>
+        <field name="context">{'form_no_edit':[('state','=','borrador')]}</field>
+        <field name="arch" type="xml">
+          <tree>
+
+          </tree>
+        </field>
+      </record>
+
+
+     <record model="ir.ui.view" id="codeson.viatico_form">
+        <field name="name">Viatico</field>
+        <field name="model">codeson.viatico</field>
+        <field name="context">{'form_no_edit':[('state','=','borrador')]}</field>
+        <field name="arch" type="xml">
+          <form>
+            <header>
+              <button name="cancelar" states="borrador,confirmado" edit='false' string="Cancelar" type="object" class="readonly"/>
+              <button name="confirmar" states="borrador" edit='false' string="Confirmar" type="object" class="btn-primary readonly"/>
+              <button name="validar" states="confirmado" edit='false' string="Validar" type="object" class="btn-primary readonly"/>
+              <button name="gen_orden_pago" states="validado" edit='false' string="Generar orden de pago" type="object" class="btn-primary readonly"/>
+              <field name="state" widget="statusbar" statusbar_visible="bo  rrador,confirmado,validado,pagado" class="readonly" />
+            </header>
+            <sheet>
+              <div class="oe_button_box oe_read_only" name="button_box" >
+
+
+                <button class="oe_stat_button"  states="proceso_pago" type="object" name="nada" icon="fa-money">
+                    <field string="Orden de pago" name="orden_id" widget="statinfo"  />
+                  </button>
+
+            <button class="oe_stat_button" type="action" name="%(codeson.documento_viatico_action)d"
+              context="{
+                     'search_default_viatico_id': active_id,
+                     'default_viatico_id': active_id
+                     }"
+                icon="fa-sticky-note">
+                <field string="Documentación" name="documentacion_count" widget="statinfo" />
+              </button>
+            </div>
+            <div class="pull-left">
+               <label for="folio" class="oe_edit_only oe_inline" />
+               <h1>
+                  <field name="folio" readonly="1" />
+               </h1>
+            </div>
+            <group>
+              <group>
+                <field name="orden_id" invisible="1" />
+                <field name="empleado"/>
+                <field name="asunto"/>
+                <field name="trabajo"/>
+                <field name="fecha_salida"/>
+                <field name="fecha_regreso"/>
+                <field name="transporte" required="1"/>
+              </group>
+              <group>
+                <field name="fecha"/>
+                <field name="unidad_administrativa"/>
+                <field name="unidad_administrativa_permitidas" invisible="1"/>
+                <field name="creador" invisible="1"/>
+                <field name="autoriza"/>
+                <field name="puesto_autoriza"/>
+              </group>
+            </group>
+            <notebook>
+               <page string="Conceptos">
+                  <field name="line_ids"  context="{'default_unidad_administrativa':unidad_administrativa}" attrs="{'readonly': [('state', '!=', 'borrador')]}">
+                     <tree editable="bottom">
+                       <field name="unidad_administrativa" string="Dirección"/>
+                        <field name="obj_gasto" string="Partida" />
+                        <field name="product_id" string="Concepto">
+                          <form>
+                            <field name="name"/>
+                          </form>
+                        </field>
+                        <field name="detalles" />
+                        <field name="cantidad" />
+                        <field name="unidad_medida" />
+                        <field name="impuesto" string="Impuestos" widget="many2many_tags" options="{'no_create': True}" />
+                        <field name="precio_unitario"/>
+                     </tree>
+                  </field>
+               </page>
+            </notebook>
+            <group class="oe_subtotal_footer oe_right">
+                                <field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <div class="oe_subtotal_footer_separator oe_inline">
+                                <label for="amount_total"/>
+                                </div>
+                                <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                </group>
+            </sheet>
+          </form>
+        </field>
+      </record>
+
+
+      <record model="ir.ui.view" id="codeson.orden_pago_viatico_tree">
+       <field name="name">Orden de pago</field>
+       <field name="model">codeson.orden_pago</field>
+       <field name="arch" type="xml">
+       <tree create="false" edit="false">
+              <field name="name"/>
+              <field name="viatico_id"/>
+              <field name="comisionado" string="Comisionado"/>
+              <field name="fecha"/>
+              <field name="state" string="Estado"/>
+              <field name="amount_total"/>
+           </tree>
+         </field>
+       </record>
+
+      <record model="ir.actions.act_window" id="codeson.viatico_orden_pago_w">
+                     <field name="name">Ordenes de pago</field>
+                     <field name="res_model">codeson.orden_pago</field>
+                     <field name="view_mode">tree,form</field>
+                     <field name="view_id" ref="codeson.orden_pago_tree" />
+                     <field name="domain">[('tipo','=','viatico')]</field>
+                <field name="view_id" ref="codeson.orden_pago_viatico_tree" />
+     </record>
+
+
+     <menuitem name="Viaticos" id="codeson.viatico_root" sequence="3" />
+     <menuitem name="Viaticos" parent="codeson.viatico_root" id="codeson.viatico" />
+     <menuitem name="Todos" parent="codeson.viatico" sequence="1" id="codeson.viaticos_todos" action="codeson.viatico_w" />
+     <menuitem name="Borrador" parent="codeson.viatico" sequence="2" id="codeson.viaticos_borradores" action="codeson.viatico_borradores_w" />
+     <menuitem name="Confirmados" parent="codeson.viatico" sequence="3" id="codeson.viaticos_confirmados" action="codeson.viatico_confirmados_w" />
+     <menuitem name="Validados" parent="codeson.viatico" sequence="4" id="codeson.viaticos_validados" action="codeson.viatico_validados_w" />
+
+     <menuitem name="Ordenes de pago" parent="codeson.viatico_root" id="codeson.viatico_ordenes_pago" />
+     <menuitem name="Todos"  parent="codeson.viatico_ordenes_pago" sequence="1" id="codeson.viatico_orden_pagos_todos" action="codeson.viatico_orden_pago_w" />
+
+   </data>
+  </odoo>

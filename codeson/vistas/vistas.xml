@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<form string="Requisición">
+            <header>
+                <button name="306" type="action" string="New Quotation" attrs="{'invisible': [('state', '!=', 'open')]}"/>
+                <button name="306" type="action" string="New Quotation" class="btn-primary" attrs="{'invisible': [('state', '!=', 'in_progress')]}"/>
+                <button name="action_in_progress" states="draft" string="Confirm" type="object" class="btn-primary"/>
+                <button name="action_open" states="in_progress" string="Validate" type="object" class="btn-primary"/>
+                <button name="action_done" states="open" string="Done" type="object" class="btn-primary"/>
+                <button name="action_draft" states="cancel" string="Reset to Draft" type="object"/>
+                <button name="action_cancel" states="draft,in_progress" string="Cancel Call" type="object"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,open,done"/>
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button name="307" type="action" class="oe_stat_button" icon="fa-list-alt" attrs="{'invisible': [('state', '=', 'draft')]}">
+                        <field name="order_count" widget="statinfo" string="RFQs/Orders"/>
+                    </button>
+                </div>
+                <div class="pull-left">
+                    <label for="name" class="oe_edit_only oe_inline"/>
+                    <h1>
+                        <field name="name" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                    </h1>
+                </div>
+                <group>
+                    <group>
+			<field name="servicio_requerido"/>
+			<field name="solicita"/>
+			<field name="instalacion"/>
+                        <field name="user_id" attrs="{'readonly': [('state','not in',('draft','in_progress','open'))]}"/>
+
+                        <field name="vendor_id" attrs="{'invisible': True}" context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}" domain="[('supplier','=',True)]"/>
+                        <field name="account_analytic_id" colspan="2" groups="purchase.group_analytic_accounting" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                    </group>
+                    <group>
+                        <field name="date_end" attrs="{'invisible': True,'readonly': [('state','not in',('draft','in_progress','open'))]}"/>
+                        <field name="ordering_date" attrs="{'readonly': [('state','not in',('draft','in_progress','open'))]}"/>
+                        <field name="schedule_date" attrs="{'invisible': True, 'readonly': [('state','not in',('draft','in_progress','open'))]}"/>
+                        <field name="origin" placeholder="e.g. PO0025" attrs="{'invisible': True, 'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="picking_type_id" widget="selection" groups="stock.group_adv_location" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                        <field name="type_id" attrs="{'readonly': [('state','not in',('draft','in_progress','open'))]}" widget="selection"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Products">
+                        <field name="line_ids">
+                            <tree string="Products" editable="bottom">
+				<field name="codigo"/>
+                                <field name="product_id"/>
+                                <field name="product_qty"/>
+                                <field name="qty_ordered"/>
+                                <field name="product_uom_id" groups="product.group_uom"/>
+                                <!--field name="schedule_date" groups="base.group_no_one"/-->
+                                <field name="account_analytic_id" groups="purchase.group_analytic_accounting"/>
+                                <field name="price_unit"/>
+                            </tree>
+                            <form string="Products">
+                                <group>
+
+                                    <field name="product_id"/>
+                                    <field name="product_qty"/>
+                                    <field name="qty_ordered"/>
+                                    <field name="product_uom_id"/>
+                                    <field name="schedule_date"/>
+                                    <field name="account_analytic_id" groups="purchase.group_analytic_accounting"/>
+                                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                                </group>
+                            </form>
+                        </field>
+                        <separator string="Terms and Conditions"/>
+                        <field name="description" attrs="{'readonly': [('state','not in',('draft','in_progress','open'))]}"/>
+                    </page>
+                </notebook>
+            </sheet>
+            <div class="oe_chatter">
+              <field name="message_follower_ids" widget="mail_followers"/>
+              <field name="message_ids" widget="mail_thread"/>
+            </div>
+            </form>

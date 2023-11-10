@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <data>
+      <report id="codeson_viatico" paperformat="codeson.paperformat" model="codeson.viatico" string="Viatico" report_type="qweb-pdf" name="codeson.report_viatico" file="codeson.report_viatico" print_report_name = "('Viatico - '+object.name+'.pdf')" />
+      <template id="report_viatico">
+         <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+               <t t-call="web.external_layout_viaticos">
+                  <div class="page">
+                     <div class="oe_structure"/>
+                     <div class="row mt32 mb32">
+                        <div class="col-xs-6" style="text-transform: uppercase;">
+                           <strong>Dirección:</strong>
+                           <span t-field="o.unidad_administrativa"/>
+                           <br/>
+                           <strong>Asunto:</strong>
+                           <span t-field="o.asunto"/>
+                           <br/>
+                           <strong>Fecha de salida:</strong>
+                           <span t-field="o.fecha_salida"/>
+                           <br/>
+                           <strong>Fecha de regreso:</strong>
+                           <span t-field="o.fecha_regreso"/>
+                           <br/>
+                           <strong>Medio de transporte:</strong>
+                           <span t-field="o.transporte"/>
+                           <br/>
+
+                        </div>
+                        <div class="col-xs-6" style="text-transform: uppercase;">
+                          <strong>Autoriza:</strong>
+                          <span t-field="o.autoriza"/>
+                          <br/>
+                          <strong>Comisionado:</strong>
+                          <span t-field="o.empleado"/>
+                          <br/>
+                          <strong>Trabajo a desempeñar:</strong>
+                          <span t-field="o.trabajo"/>
+                          <br/>
+                        </div>
+                     </div>
+                     <br/>
+                     <br/>
+                     <table class="table table-condensed" style="margin-top:45px;text-transform: uppercase;">
+                        <thead>
+                           <tr>
+                              <th>
+                                 <strong>Partida</strong>
+                              </th>
+                              <th>
+                                 <strong>Descripción</strong>
+                              </th>
+                              <th>
+                                 <strong>Unidad</strong>
+                              </th>
+                              <th>
+                                 <strong>Precio</strong>
+                              </th>
+                              <th class="text-right">
+                                 <strong>Qty</strong>
+                              </th>
+                              <th class="text-right">
+                                <strong>Subtotal</strong>
+                              </th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <tr t-foreach="o.line_ids" t-as="order_line">
+                              <td>
+                                 <span t-field="order_line.product_id.obj_gasto"/>
+                              </td>
+                              <td>
+                                 <span t-field="order_line.product_id.name"/>
+                                 <br/>
+                                 <small>
+                                    <span t-field="order_line.detalles"/>
+                                 </small>
+                              </td>
+                              <td>
+                                 <span t-field="order_line.unidad_medida.name"/>
+                              </td>
+                              <td class="text-right">
+                                 <span t-field="order_line.precio_unitario"/>
+                              </td>
+                              <td class="text-right">
+                                 <span t-field="order_line.cantidad"/>
+                              </td>
+                              <td class="text-right">
+                                 <span t-field="order_line.subtotal"/>
+                              </td>
+                           </tr>
+                        </tbody>
+
+                     </table>
+
+                     <t t-set="subtotal" t-value="0.0"/>
+                     <t t-set="impuestos" t-value="0.0"/>
+                     <t t-set="total" t-value="0.0"/>
+                     <p t-foreach="o.line_ids" t-as="order_line">
+                       <t t-set="subtotal" t-value="subtotal+order_line.subtotal"/>
+                       <t t-set="impuestos" t-value="impuestos+order_line.impuestos"/>
+                    </p>
+
+
+                     <div class="row">
+                <div class="col-xs-4 pull-right">
+                    <table class="table table-condensed">
+                        <tr class="border-black">
+                            <td><strong>Subtotal</strong></td>
+                            <td class="text-right">
+                                <span t-esc="'{0:,.2f}'.format(subtotal)"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Impuestos</td>
+                            <td class="text-right">
+                                <span t-esc="'{0:,.2f}'.format(impuestos)"/>
+                                </td>
+                        </tr>
+                        <tr class="border-black">
+                            <td><strong>Total</strong></td>
+                            <td class="text-right">
+                              <t t-set="total" t-value="total+subtotal+impuestos"/>
+                              <span t-esc="'{0:,.2f}'.format(total)"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+
+                     <div class="oe_structure"/>
+                              <div class="footer " style="font-size:small;">
+                                 <div class="col-xs-6 text-center" style="font-size:x-small">
+                                   <div style="text-transform: uppercase; font-size:small"><span t-field="o.autoriza.saludo"/> <span t-field="o.autoriza.name"/></div>
+                                   <br/>
+                                   <span><br/>_______________________________________<br/>FIRMA DE AUTORIZACIÓN<br/><span t-field="o.autoriza.job_id" style="text-transform: uppercase;"/></span>
+
+                                 </div>
+                                 <div class="col-xs-5 col-xs-offset-1 text-center" style="font-size:x-small">
+                                   <div style="text-transform: uppercase; font-size:small"><span t-field="o.empleado.saludo"/> <span t-field="o.empleado.name"/></div>
+                                   <br/>
+                                   <span><br/>_________________________________________<br/>RECIBI NOTIFICACIÓN E IMPORTE DE LA ORDEN<br/><span t-field="o.autoriza.job_id" style="text-transform: uppercase;"/></span>
+
+                                 </div>
+                                 <div class="col-xs-12 text_center">
+                                   <br/>
+                                   <br/>
+                                 <hr style="padding: 0px; margin: 0px;"/>
+                                 <p class="text-center" style="font-size:x-small; color:#505050">Comisión del Deporte del Estado de Sonora. Blvr. Solidaridad No. 404, Col. Álvaro Obregón.<br/>
+          Hermosillo, Sonora. C.P. 83170. Teléfonos: (662) 26018 50 y (662) 260 20 97.</p>
+         </div>
+                                    </div>
+
+
+
+                  </div>
+               </t>
+            </t>
+         </t>
+      </template>
+   </data>
+</odoo>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <data>
+<record model="ir.module.category" id="codeson.apoyo_management">
+  <field name="name">Módulo de apoyos</field>
+  <field name="description">Acceso a módulo de apoyos</field>
+  <field name="sequence">1</field>
+</record>
+
+<record model="ir.module.category" id="codeson.apoyo_management_item">
+  <field name="name">Módulo de apoyos</field>
+  <field name="description">Acceso a módulo de apoyos</field>
+  <field name="sequence">1</field>
+  <field name="category_id" ref="codeson.apoyo_management"/>
+</record>
+
+<record id="apoyo_admin" model="res.groups">
+    <field name="name">Administrador</field>
+    <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    <field name="users" eval="[(4, ref('base.user_root'))]"/>
+    <field name="category_id" ref="codeson.apoyo_management_item"/>
+   </record>
+
+   <record id="apoyo_user" model="res.groups">
+     <field name="name">Usuario</field>
+     <field name="category_id" ref="codeson.apoyo_management_item"/>
+   </record>
+
+</data>
+</odoo>

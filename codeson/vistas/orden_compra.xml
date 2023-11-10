@@ -1,0 +1,47 @@
+<odoo>
+<data>
+<record id="compras_codeson_orden" model="ir.ui.view">
+   <field name="name">product.template.product.form_codeson</field>
+   <field name="model">purchase.order</field>
+   <field name="inherit_id" ref="purchase.purchase_order_form"/>
+   <field name="arch" type="xml">
+       <data>
+           <xpath expr="//field[@name='partner_id']" position="after">
+             <field name="solicita"/>
+             <field name="servicio_requerido"/>
+             <field name="unidad_administrativa"/>
+             <field name="unidad_administrativa_permitidas" invisible="1"/>
+             <field name="instalacion"/>
+            <field name="creador" invisible="1"/>
+           </xpath>
+         <xpath expr="//tree" position="replace">
+           <tree string="Purchase Order Lines" editable="bottom">
+           <field name="unidad_administrativa" string="Dirección"/>
+                        <field name="obj_gasto" string="Partida"/>
+                        <field name="product_id" attrs="{'readonly': [('state', 'in', ('purchase', 'to approve','done', 'cancel'))]}" context="{'partner_id':parent.partner_id, 'quantity':product_qty,'uom':product_uom, 'company_id': parent.company_id}" force_save="1"/>
+
+                        <field name="name"/>
+
+                        <field name="product_qty"/>
+                        <field name="unidad_medida"/>
+                                    <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]" context="{'default_type_tax_use': 'purchase'}" options="{'no_create': True}"/>
+                                    <field name="price_unit"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="state" invisible="1"/>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="move_dest_ids" invisible="1"/>
+                                    <field name="date_planned" invisible="1"/>
+                                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                                    <field name="account_analytic_id" context="{'default_partner_id':parent.partner_id}" groups="purchase.group_analytic_accounting"/>
+                                    <field name="analytic_tag_ids" groups="purchase.group_analytic_accounting" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                    <field name="qty_received" invisible="1"/>
+                                    <field name="qty_invoiced" invisible="1"/>
+                                    <field name="product_uom" invisible="1" groups="product.group_uom" attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))]}" force_save="1"/>
+                                    <field name="price_subtotal" widget="monetary" invisible="1"/>
+           </tree>
+         </xpath>
+       </data>
+   </field>
+</record>
+</data>
+</odoo>

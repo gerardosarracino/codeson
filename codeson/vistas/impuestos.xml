@@ -1,0 +1,12 @@
+<odoo>
+  <data>
+    <record model="ir.actions.act_window" id="codeson.impuestos_w">
+         <field name="name">Impuestos</field>
+         <field name="res_model">account.tax</field>
+         <field name="view_mode">tree,form</field>
+      </record>
+
+    <menuitem name="Impuestos" id="codeson.impuesto_menu" sequence="4" parent="codeson.presupuesto_root" action="codeson.impuestos_w"/>
+
+  </data>
+</odoo>

@@ -1,0 +1,127 @@
+<odoo>
+  <data>
+
+        <record model="ir.actions.act_window" id="codeson.gasto_aprobado_w">
+                       <field name="name">Gasto aprobado</field>
+                       <field name="res_model">codeson.gasto_aprobado</field>
+                       <field name="view_mode">tree,form</field>
+       </record>
+
+       <record model="ir.ui.view" id="codeson.gasto_aprobado_tree">
+         <field name="name">Gasto aprobado</field>
+         <field name="model">codeson.gasto_aprobado</field>
+         <field name="arch" type="xml">
+         <tree>
+                <field name="clave_presupuestal" string="Clave presupuestal"/>
+                <field name="obj_gasto" string="Concepto de la cuenta"/>
+                <field name="ejercicio" string="Ejercicio"/>
+                <field name="anual" string="Anual"/>
+                <field name="enero" string="Ene"/>
+                <field name="febrero" string="Feb"/>
+                <field name="marzo" string="Mar"/>
+                <field name="abril" string="Abr"/>
+                <field name="mayo" string="May"/>
+                <field name="junio" string="Jun"/>
+                <field name="julio" string="Jul"/>
+                <field name="agosto" string="Ago"/>
+                <field name="septiembre" string="Sep"/>
+                <field name="octubre" string="Oct"/>
+                <field name="noviembre" string="Nov"/>
+                <field name="diciembre" string="Dic"/>
+
+             </tree>
+           </field>
+         </record>
+
+         <record model="ir.ui.view" id="codeson.gasto_aprobado_form">
+             <field name="name">Gasto aprobado</field>
+             <field name="model">codeson.gasto_aprobado</field>
+             <field name="arch" type="xml" >
+              <form>
+                <sheet>
+                  <div class="pull-left">
+                     <label for="clave_presupuestal" class="oe_edit_only oe_inline"/>
+                     <h1>
+                        <field name="clave_presupuestal" readonly="1"/>
+                     </h1>
+                  </div>
+                  <group>
+                    <group>
+                      <field name="ejercicio" required="True"/>
+                      <field name="financiamiento"/>
+                      <field name="proyecto"/>
+                    </group>
+                    <group>
+                      <field name="unidad" string="Unidad administrativa"/>
+                      <field name="obj_gasto" string="Concepto de la cuenta"/>
+                      <field name="anual" string="Monto anual"/>
+                    </group>
+                    <notebook>
+                      <page string="Captura del Monto mensual y Prorrateo">
+                        <group>
+                        <group>
+                          <field name="enero"/>
+                          <field name="febrero"/>
+                          <field name="marzo"/>
+                          <field name="abril"/>
+                          <field name="mayo"/>
+                          <field name="junio"/>
+
+                        </group>
+                        <group>
+                          <field name="julio"/>
+                          <field name="agosto"/>
+                          <field name="septiembre"/>
+                          <field name="octubre"/>
+                          <field name="noviembre"/>
+                          <field name="diciembre"/>
+                        </group>
+                      </group>
+                    </page>
+                    </notebook>
+                  </group>
+                </sheet>
+              </form>
+            </field>
+          </record>
+
+
+ <record model="ir.ui.view" id="codeson.gasto_modificacion_form">
+             <field name="name">Modificacion al presupuesto</field>
+             <field name="model">codeson.gasto_modificacion</field>
+             <field name="arch" type="xml" >
+              <form>
+                <sheet>
+                  <group>
+                    <field name="gasto_modificado"/>
+                    <field name="gasto_aprobado"/>
+                    <field name="currency_id"/>
+                    <field name="monto_anual_anterior"/>
+                    <field name="nuevo_monto"/>
+                  </group>
+                </sheet>
+              </form>
+            </field>
+          </record>
+
+
+ <record model="ir.actions.act_window" id="codeson.gasto_modificacion_w">
+                       <field name="name">Modificacion al presupuesto</field>
+                       <field name="res_model">codeson.gasto_modificacion</field>
+                       <field name="view_mode">tree,form</field>
+       </record>
+
+        <record model="ir.actions.act_window" id="codeson.gasto_modificado_w">
+                       <field name="name">Gasto modificado</field>
+                       <field name="res_model">codeson.gasto_modificado</field>
+                       <field name="view_mode">tree,form</field>
+       </record>
+
+      
+
+      <menuitem name="Gasto Aprobado" id="codeson.gasto_aprobado" parent="codeson.presupuesto_root" action="codeson.gasto_aprobado_w"/>
+      <menuitem name="Gasto Modificado" id="codeson.gasto_modificado" parent="codeson.presupuesto_root" action="codeson.gasto_modificado_w"/>
+      <menuitem name="Modificacion al presupuesto" id="codeson.gasto_modificacion" parent="codeson.presupuesto_root" action="codeson.gasto_modificacion_w"/>
+  </data>
+  
+</odoo>

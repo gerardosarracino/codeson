@@ -1,0 +1,13 @@
+<odoo>
+  <data>
+    <record model="ir.actions.act_window" id="codeson.clasificador_action">
+      <field name="name">Clasificador por objeto del gasto</field>
+      <field name="res_model">codeson.obj_gasto</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Presupuesto" id="codeson.presupuesto_menu_root"/>
+    <menuitem name="Objeto de gasto" id="codeson.objeto_gasto_menu" parent="codeson.presupuesto_menu_root"/>
+    <menuitem name="Clasificador" id="codeson.obj_gasto_menu" parent="codeson.objeto_gasto_menu" action="codeson.clasificador_action"/>
+  </data>
+</odoo>

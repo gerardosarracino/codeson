@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <data>
+      <report id="codeson_orden_pago"
+        model="codeson.orden_pago"
+        string="Orden de pago"
+        report_type="qweb-pdf"
+        name="codeson.report_orden_pago"
+        file="codeson.report_orden_pago"
+        print_report_name = "('Orden de pago - '+object.name+'.pdf')"
+        paperformat = "codeson.paperformat"  />
+      <template id="report_orden_pago">
+         <t t-name="codeson.report_orden_pago">
+   <t t-call="web.html_container">
+      <t t-foreach="docs" t-as="o">
+         <t t-call="web.external_layout_orden_pago">
+            <div class="page">
+               <div class="oe_structure" />
+               <div class="row mt32 mb32">
+                  <br />
+                  <div class="col-xs-6" style="font-size:small;text-transform: uppercase;">
+                     <strong>Dirección:</strong>
+                     <span t-field="o.unidad_administrativa" />
+                     <br />
+                     <strong>Solicitante:</strong>
+                     <span t-field="o.solicita" />
+                     <br />
+                     <span t-if="o.proveedor">
+                        <strong>Proveedor:</strong>
+                        <span t-field="o.proveedor" />
+                     </span>
+                  </div>
+                  <div class="col-xs-6" style="font-size:small;text-transform: uppercase;">
+                     <span t-if="o.cheque_nombre">
+                        <strong>Cheque a nombre de:</strong>
+                        <span t-field="o.cheque_nombre" />
+                        <br />
+                        
+                     </span>
+                     <span t-if="o.referencia_proveedor">
+                        <strong>Referencia de proveedor:</strong>
+                        <span t-field="o.referencia_proveedor" />
+                        <br />
+                     </span>
+                     <span t-if="o.referencia">
+                     <strong>Documento de referencia:</strong>
+                     <span t-field="o.referencia" />
+                     <br />
+                   </span>
+                     <strong>Descripción:</strong>
+                     <span t-field="o.descripcion" />
+                  </div>
+               </div>
+               <br />
+               <br />
+               <table class="table table-condensed" style="font-size:small;margin-top:45px;text-transform: uppercase;">
+                  <thead>
+                     <tr>
+                        <th>
+                           <strong>Partida</strong>
+                        </th>
+                        <th>
+                           <strong>Descripción</strong>
+                        </th>
+                        <th>
+                           <strong>Unidad</strong>
+                        </th>
+                        <th class="text-right">
+                           <strong>Precio</strong>
+                        </th>
+                        <th class="text-right">
+                           <strong>Cantidad</strong>
+                        </th>
+                        <th class="text-right">
+                           <strong>Subtotal</strong>
+                        </th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr t-foreach="o.line_ids" t-as="order_line">
+                        <td>
+                           <span t-field="order_line.product_id.obj_gasto" />
+                        </td>
+                        <td>
+                           <span t-field="order_line.product_id.name" />
+                           <br />
+                           <small>
+                              <span t-field="order_line.detalles" />
+                           </small>
+                        </td>
+                        <td>
+                           <span t-field="order_line.unidad_medida.name" />
+                        </td>
+                        <td class="text-right">
+                           <span t-field="order_line.precio_unitario" />
+                        </td>
+                        <td class="text-right">
+                           <span t-field="order_line.cantidad" />
+                        </td>
+                        <td class="text-right">
+                           <span t-field="order_line.subtotal" />
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+               <t t-set="subtotal" t-value="0.0" />
+               <t t-set="impuestos" t-value="0.0" />
+               <t t-set="total" t-value="0.0" />
+               <p t-foreach="o.line_ids" t-as="order_line">
+                  <t t-set="subtotal" t-value="subtotal+order_line.subtotal" />
+                  <t t-set="impuestos" t-value="impuestos+order_line.impuestos" />
+               </p>
+               <div class="row">
+                  <div class="col-xs-4 pull-right">
+                     <table class="table table-condensed">
+                        <tr class="border-black">
+                           <td>
+                              <strong>Subtotal</strong>
+                           </td>
+                           <td class="text-right">
+                              <span t-esc="'{0:,.2f}'.format(subtotal)"/>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>Impuestos</td>
+                           <td class="text-right">
+                              <span t-esc="'{0:,.2f}'.format(impuestos)" />
+                           </td>
+                        </tr>
+                        <tr class="border-black">
+                           <td>
+                              <strong>Total</strong>
+                           </td>
+                           <td class="text-right">
+                              <t t-set="total" t-value="total+subtotal+impuestos" />
+                              <span t-esc="'{0:,.2f}'.format(total)" />
+                           </td>
+                        </tr>
+                     </table>
+                  </div>
+               </div>
+               <br />
+               <br />
+               <h5 style="color:#2C3539;text-transform: uppercase;">
+                  Páguese la cantidad de $
+                  <span t-esc="'{0:,.2f}'.format(total)" />
+                  (
+                  <span t-field="o.total_de_factura_esp" />
+                  <span t-esc="'{0:,.2f}'.format(total).split('.')[1]"/>/100 M.N)
+               </h5>
+               <div class="footer text-center" style="font-size:small">
+                  <table class="table table-bordered">
+                     <thead>
+                        <tr>
+                           <th>
+                              <strong>SOLICITA</strong>
+                           </th>
+                           <th>
+                              <strong>DIRECCIÓN ADMINISTRATIVA</strong>
+                           </th>
+                           <th>
+                              <strong>DIRECCIÓN GENERAL</strong>
+                           </th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr>
+                           <td>
+                              <br />
+                           </td>
+                           <td>
+                              <br />
+                           </td>
+                           <td>
+                              <br />
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>
+                              <strong>
+                                 <span style="text-transform: uppercase;" t-field="o.solicita" />
+                              </strong>
+                           </td>
+                           <td>
+                              <strong>
+                                 <span style="text-transform: uppercase;" t-field="o.dir_finanzas" />
+                              </strong>
+                           </td>
+                           <td>
+                              <strong>
+                                 
+                                 <span style="text-transform: uppercase;" t-field="o.nombre_director" />
+                                 
+                         
+                              </strong>
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+                  <hr style="padding: 0px; margin: 0px;" />
+                  <p class="text-center" style="font-size:x-small; color:#505050">
+                     Comisión del Deporte del Estado de Sonora. Blvr. Solidaridad No. 404, Col. Álvaro Obregón.
+                     <br />
+                     Hermosillo, Sonora. C.P. 83170. Teléfonos: (662) 26018 50 y (662) 260 20 97.
+                  </p>
+               </div>
+            </div>
+         </t>
+      </t>
+   </t>
+</t>
+      </template>
+   </data>
+</odoo>

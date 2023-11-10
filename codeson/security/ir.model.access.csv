@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+acces_instalacion,access.codeson.instalacion,model_codeson_instalacion,purchase.group_purchase_user,1,1,1,1
+acces_proyecto_proceso,access.codeson.proyecto_proceso,model_codeson_proyecto_proceso,purchase.group_purchase_user,1,1,1,1
+acces_clas_obj_gasto,access.codeson._clas_obj_gasto,model_codeson_clas_obj_gasto,purchase.group_purchase_user,1,1,1,1
+acces_clas_unidad_medida,access.codeson.unidad_medida,model_codeson_unidad_medida,purchase.group_purchase_user,1,1,1,1
+acces_clas_unidad_administrativa,access.codeson.unidad_administrativa,model_codeson_unidad_administrativa,purchase.group_purchase_user,1,1,1,1
+
+access_class_apoyo,access.codeson.apoyo,model_codeson_apoyo,purchase.group_purchase_user,1,1,1,1
+access_class_solicitante_apoyo,access.codeson.solicitante_apoyo,model_codeson_solicitante_apoyo,purchase.group_purchase_user,1,1,1,1
+access_class_apoyo_line,access.codeson.apoyo_line,model_codeson_apoyo_line,purchase.group_purchase_user,1,1,1,1
+access_class_evidencia_apoyo,access.codeson.evidencia_apoyo,model_codeson_evidencia_apoyo,purchase.group_purchase_user,1,1,1,1
+access_class_documento_apoyo,access.codeson.documento_apoyo,model_codeson_documento_apoyo,purchase.group_purchase_user,1,1,1,1
+
+
+apoyo_admin_group, Administrador de apoyos,model_codeson_apoyo,codeson.apoyo_admin,1,1,1,1
+apoyo_user_group, Usuario de apoyos,model_codeson_apoyo,codeson.apoyo_user,1,0,0,0
